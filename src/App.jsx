@@ -136,32 +136,23 @@ export default function AWSLearningGame() {
   };
 
   const submitForApproval = async () => {
-    if (!newActivity.playerName || !newActivity.description) {
-      alert('Please fill in your name and description');
-      return;
-    }
+    if (!newActivity.playerName || !newActivity.description) return;
 
-    try {
-      const submission = {
-        playerName: newActivity.playerName,
-        type: newActivity.type,
-        description: newActivity.description,
-        points: newActivity.type === 'custom' ? parseInt(newActivity.customPoints) : ACTIVITY_TYPES[newActivity.type].points,
-        timestamp: Date.now(),
-        status: 'pending'
-      };
+    const submission = {
+      playerName: newActivity.playerName,
+      type: newActivity.type,
+      description: newActivity.description,
+      points: newActivity.type === 'custom' ? parseInt(newActivity.customPoints) : ACTIVITY_TYPES[newActivity.type].points,
+      timestamp: Date.now(),
+      status: 'pending'
+    };
 
-      const pendingRef = ref(database, 'pending');
-      const newSubmissionRef = push(pendingRef);
-      await set(newSubmissionRef, submission);
+    const pendingRef = ref(database, 'pending');
+    const newSubmissionRef = push(pendingRef);
+    await set(newSubmissionRef, submission);
 
-      setNewActivity({ playerName: '', type: 'module', description: '', customPoints: 10 });
-      setShowAddActivity(false);
-      alert('Achievement submitted for approval!');
-    } catch (error) {
-      console.error('Error submitting:', error);
-      alert('Failed to submit. Please try again.');
-    }
+    setNewActivity({ playerName: '', type: 'module', description: '', customPoints: 10 });
+    setShowAddActivity(false);
   };
 
   const approveSubmission = async (submissionId, approvedPoints) => {
